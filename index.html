@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zimbabe Creation - Crochet Store</title>
+    <style>
+        :root {
+            --primary: #6d4c41;
+            --primary-light: #8d6e63;
+            --accent: #d7ccc8;
+            --text: #3e2723;
+            --bg: #efebe9;
+            --white: #ffffff;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        .nav-btn {
+            background: none;
+            border: 1px solid var(--white);
+            color: var(--white);
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .nav-btn:hover {
+            background-color: var(--white);
+            color: var(--primary);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .catalog-title {
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+        .card {
+            background-color: var(--white);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card-img {
+            width: 100%;
+            height: 200px;
+            background-color: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        .card-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        .card-title {
+            margin: 0 0 10px 0;
+            font-size: 18px;
+        }
+        .card-price {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        .btn {
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            margin-top: auto;
+            transition: background 0.2s;
+        }
+        .btn:hover {
+            background-color: var(--primary-light);
+        }
+        .custom-section {
+            background-color: var(--white);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        /* Modal General Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background-color: var(--white);
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #888;
+        }
+        .close-btn:hover {
+            color: #000;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        /* Cart Items Styles */
+        .cart-warning {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            border: 1px solid #ffeeba;
+        }
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cart-item-details {
+            display: flex;
+            flex-direction: column;
+        }
+        .delete-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.2s;
+        }
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+        .cart-total {
+            font-size: 18px;
+            font-weight: bold;
+            text-align: right;
+            margin: 20px 0;
+        }
+        .profile-status {
+            font-size: 13px;
+            color: green;
+            margin-top: 5px;
+            display: none;
+        }
+    </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+    <header>
+        <h1>🧶 Zimbabe Creation</h1>
+        <div class="nav-links">
+            <button class="nav-btn" onclick="openModal('cartModal')">🛒 Cart (<span id="cartCount">0</span>)</button>
+            <button class="nav-btn" onclick="openModal('accountModal')">👤 Sign In / Profile</button>
+            <button class="nav-btn" onclick="openModal('trackingModal')">📦 Your Orders</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <h2 class="catalog-title">Our Crochet Catalog</h2>
+        <div class="grid" id="productGrid"></div>
+
+        <div class="custom-section">
+            <h3>Have an idea?</h3>
+            <h2>Want something custom?</h2>
+            <p>Tell us your idea and place a custom crochet order.</p>
+            <button class="btn" style="max-width: 200px; margin: 0 auto;" onclick="openModal('customModal')">Custom order</button>
+        </div>
+    </div>
+
+    <!-- Account & Delivery Profile Modal -->
+    <div id="accountModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('accountModal')">&times;</span>
+            <h2>Create Account & Delivery Profile</h2>
+            <p style="font-size: 14px; color: #666;">Please register your permanent delivery information to browse and checkout items.</p>
+            <form id="profileForm" onsubmit="saveProfile(event)">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="fullName" required placeholder="John Doe">
+                </div>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" id="phone" required placeholder="1234567890">
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="email" required placeholder="john@example.com">
+                </div>
+                <div class="form-group">
+                    <label>Complete Address</label>
+                    <textarea id="address" required rows="3" placeholder="Street details, Landmark, City"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Pincode / ZIP Code</label>
+                    <input type="text" id="pincode" required placeholder="123456">
+                </div>
+                <button type="submit" class="btn">Save Account Details</button>
+                <div id="profileSavedStatus" class="profile-status">✓ Profile data loaded successfully!</div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Custom Crochet Design Modal -->
+    <div id="customModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('customModal')">&times;</span>
+            <h2>Request a Custom Crochet Design</h2>
+            <div class="form-group">
+                <label>Describe your Customisation Idea</label>
+                <textarea id="customIdea" rows="4" placeholder="Describe layout, colors, sizes..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Quantity</label>
+                <input type="number" id="customQty" value="1" min="1">
+            </div>
+            <div class="form-group">
+                <label>Reference Design Image</label>
+                <input type="file" id="customFile">
+            </div>
+            <button class="btn" onclick="addCustomToCart()">Add Custom Order to Cart</button>
+        </div>
+    </div>
+
+    <!-- Shopping Cart Modal -->
+    <div id="cartModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('cartModal')">&times;</span>
+            <h2>Your Shopping Cart</h2>
+            
+            <div id="cartWarning" class="cart-warning">
+                ⚠ Account Required: You must enter your Account & Delivery details above before you can complete checkout.
+            </div>
+
+            <div id="cartItemsContainer">
+                <p style="color: #888; text-align: center;">Your cart is currently empty.</p>
+            </div>
+
+            <div class="cart-total">Total: ₹<span id="cartTotalAmount">0.00</span></div>
+
+            <button class="btn" id="codCheckoutBtn" onclick="proceedWithCOD()">Proceed Delivery with COD</button>
+            <p style="font-size: 12px; color: #666; text-align: center; margin-top: 15px;">
+                📷 Custom visual pattern asset linked to shipping manifest safely.
+            </p>
+        </div>
+    </div>
+
+    <!-- Order Tracking Modal -->
+    <div id="trackingModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('trackingModal')">&times;</span>
+            <h2>Your Order Tracking Profile</h2>
+            <div id="orderTrackingContainer">
+                <p style="color: #888; text-align: center;">No checkout orders registered yet under this device profile session.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://yoatofcpwnunwvxamgvu.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_DcdLkD5N6VQ6ZJjmFlCHMw_8kUCofwM';
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // State management
+        let cart = [];
+        let userProfile = JSON.parse(localStorage.getItem('zimbabeUserProfile') || 'null');
+        let orders = JSON.parse(localStorage.getItem('zimbabeOrders') || '[]');
+        let products = JSON.parse(localStorage.getItem('zimbabeProducts') || 'null') || [
+            { id: 'p1', title: 'Classic Crochet Teddy Bear', price: 2000, image: '', active: true },
+            { id: 'p2', title: 'Cozy Fall Beanie Hat', price: 1500, image: '', active: true }
+        ];
+
+        function renderProducts() {
+            const grid = document.getElementById('productGrid');
+            const activeProducts = products.filter(p => p.active !== false);
+            grid.innerHTML = activeProducts.map(p => `
+                <div class="card">
+                    <div class="card-img">${p.image ? `<img src="${p.image}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover;">` : 'Crochet Product Photo'}</div>
+                    <div class="card-body">
+                        <h3 class="card-title">${p.title}</h3>
+                        <div class="card-price">₹${Number(p.price).toFixed(2)}</div>
+                        <button class="btn" onclick="addToCart('${p.title.replace(/'/g, "\\'")}', ${Number(p.price)})">Add to Cart</button>
+                    </div>
+                </div>`).join('');
+        }
+
+        renderProducts();
+
+        // Modal Operations
+        function openModal(id) {
+            document.getElementById(id).style.display = 'flex';
+            if (id === 'accountModal' && userProfile) {
+                document.getElementById('fullName').value = userProfile.name || '';
+                document.getElementById('phone').value = userProfile.phone || '';
+                document.getElementById('email').value = userProfile.email || '';
+                document.getElementById('address').value = userProfile.address || '';
+                document.getElementById('pincode').value = userProfile.pincode || '';
+            }
+            if (id === 'cartModal') {
+                renderCart();
+            }
+            if (id === 'trackingModal') {
+                orders = JSON.parse(localStorage.getItem('zimbabeOrders') || '[]');
+                renderTracking();
+            }
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        // Window click to close modals
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+
+        // Cart Actions
+        function addToCart(title, price) {
+            cart.push({
+                id: Date.now() + Math.random(),
+                title: title,
+                price: price
+            });
+            updateCartCount();
+            alert(`${title} has been added to your cart!`);
+        }
+
+        function addCustomToCart() {
+            const idea = document.getElementById('customIdea').value;
+            const qty = parseInt(document.getElementById('customQty').value) || 1;
+            const fileInput = document.getElementById('customFile');
+            const file = fileInput.files && fileInput.files[0];
+
+            if (!idea.trim()) {
+                alert('Please describe your customization idea first!');
+                return;
+            }
+
+            const itemTitle = `Custom Design Request (Qty: ${qty})`;
+            const estimatedPrice = null; // Custom order rate will be informed later through WhatsApp
+
+            // Save the customer's reference photo inside the order as a data URL
+            // so the admin dashboard can display it later.
+            const addItem = (imageData = '') => {
+                cart.push({
+                    id: Date.now() + Math.random(),
+                    title: itemTitle,
+                    price: estimatedPrice,
+                    isCustom: true,
+                    description: idea,
+                    image: imageData
+                });
+
+                updateCartCount();
+                document.getElementById('customIdea').value = '';
+                document.getElementById('customQty').value = '1';
+                document.getElementById('customFile').value = '';
+                closeModal('customModal');
+                alert('Custom design request added to cart successfully!');
+            };
+
+            if (file) {
+                if (!file.type.startsWith('image/')) {
+                    alert('Please select an image file for the reference design.');
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = () => addItem(reader.result);
+                reader.onerror = () => alert('The reference image could not be added. Please try again.');
+                reader.readAsDataURL(file);
+            } else {
+                addItem('');
+            }
+        }
+
+        function updateCartCount() {
+            document.getElementById('cartCount').textContent = cart.length;
+        }
+
+        // FIX #1: Delete selected item from cart completely
+        function deleteCartItem(itemId) {
+            cart = cart.filter(item => item.id !== itemId);
+            updateCartCount();
+            renderCart();
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cartItemsContainer');
+            const totalSpan = document.getElementById('cartTotalAmount');
+            const warningBox = document.getElementById('cartWarning');
+
+            // Handle Profile validation appearance
+            if (userProfile) {
+                warningBox.style.display = 'none';
+            } else {
+                warningBox.style.display = 'block';
+            }
+
+            if (cart.length === 0) {
+                container.innerHTML = '<p style="color: #888; text-align: center;">Your cart is currently empty.</p>';
+                totalSpan.textContent = '0.00';
+                return;
+            }
+
+            let html = '';
+            let total = 0;
+            let hasCustomOrder = false;
+
+            cart.forEach(item => {
+                if (item.isCustom) { hasCustomOrder = true; } else { total += Number(item.price) || 0; }
+                html += `
+                    <div class="cart-item">
+                        <div class="cart-item-details">
+                            <span style="font-weight: 600;">${item.title}</span>
+                            <span style="font-size: 14px; color: #555;">${item.isCustom ? 'Rate will be informed later through WhatsApp' : '₹' + Number(item.price).toFixed(2)}</span>
+                        </div>
+                        <button class="delete-btn" onclick="deleteCartItem(${item.id})">Delete</button>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+            totalSpan.textContent = hasCustomOrder ? 'Rate will be informed later through WhatsApp' : total.toFixed(2);
+        }
+
+        // Account Profile Actions
+        function saveProfile(event) {
+            event.preventDefault();
+            userProfile = {
+                name: document.getElementById('fullName').value,
+                phone: document.getElementById('phone').value,
+                email: document.getElementById('email').value,
+                address: document.getElementById('address').value,
+                pincode: document.getElementById('pincode').value
+            };
+            
+            const statusDiv = document.getElementById('profileSavedStatus');
+            statusDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                closeModal('accountModal');
+            }, 800);
+        }
+
+        // FIX #2: Complete Delivery with COD Logic working seamlessly
+        async function dataUrlToBlob(dataUrl) {
+            const res = await fetch(dataUrl);
+            return await res.blob();
+        }
+
+        async function uploadCustomImage(dataUrl, orderId, index) {
+            if (!dataUrl) return null;
+            const blob = await dataUrlToBlob(dataUrl);
+            const ext = (blob.type && blob.type.split('/')[1]) || 'jpg';
+            const path = `${orderId}/${Date.now()}-${index}.${ext}`;
+            const { error } = await supabaseClient.storage.from('custom-order-photos').upload(path, blob, {
+                contentType: blob.type || 'image/jpeg', cacheControl: '3600', upsert: false
+            });
+            if (error) throw error;
+            return supabaseClient.storage.from('custom-order-photos').getPublicUrl(path).data.publicUrl;
+        }
+
+        async function proceedWithCOD() {
+            if (cart.length === 0) { alert('Your cart is empty! Add products before checking out.'); return; }
+            if (!userProfile) {
+                alert('Error: Account & Delivery Profile Required! Please open "Sign In / Profile" and save your delivery profile address before checking out.');
+                openModal('accountModal'); return;
+            }
+
+            const orderId = 'ZB-' + Math.floor(100000 + Math.random() * 900000);
+            const hasCustomOrder = cart.some(item => item.isCustom);
+            const totalAmt = cart.reduce((sum, item) => sum + (item.isCustom ? 0 : (Number(item.price) || 0)), 0);
+
+            try {
+                const onlineItems = [];
+                for (let i = 0; i < cart.length; i++) {
+                    const item = { ...cart[i] };
+                    if (item.isCustom && item.image && item.image.startsWith('data:')) {
+                        item.image = await uploadCustomImage(item.image, orderId, i);
+                    }
+                    onlineItems.push(item);
+                }
+
+                const newOrder = {
+                    order_id: orderId,
+                    customer_name: userProfile.name,
+                    phone: userProfile.phone,
+                    email: userProfile.email,
+                    address: userProfile.address,
+                    pincode: userProfile.pincode,
+                    items: onlineItems,
+                    total: totalAmt,
+                    status: 'Order Placed (COD)',
+                    delivery_date: null,
+                    custom_description: onlineItems.find(x => x.isCustom)?.description || null,
+                    custom_quantity: Number(((onlineItems.find(x => x.isCustom)?.title || '').match(/Qty: (\d+)/)||[])[1] || 1),
+                    custom_photo_url: onlineItems.find(x => x.isCustom)?.image || null
+                };
+
+                const { error } = await supabaseClient.from('orders').insert(newOrder);
+                if (error) throw error;
+
+                // Keep a local copy for compatibility with the existing customer view.
+                const localOrder = { id: orderId, items: onlineItems, total: totalAmt, totalToBeInformed: hasCustomOrder, status: 'Order Placed (COD)', date: new Date().toLocaleDateString(), deliveryDate: null, customer: userProfile };
+                orders.push(localOrder);
+                localStorage.setItem('zimbabeOrders', JSON.stringify(orders));
+                renderTracking();
+                cart = []; updateCartCount(); closeModal('cartModal');
+                alert(`🎉 Order ${orderId} placed successfully! Your custom photo has been uploaded for the shop to view.`);
+            } catch (error) {
+                console.error(error);
+                alert('The order could not be sent online. Please check your Supabase Storage upload policy and try again.');
+            }
+        }
+
+        async function renderTracking() {
+            const container = document.getElementById('orderTrackingContainer');
+            if (!userProfile || !userProfile.email) {
+                container.innerHTML = '<p style="color:#888;text-align:center;">Please sign in with your email address to view your orders.</p>';
+                return;
+            }
+            const myEmail = userProfile.email.trim().toLowerCase();
+            const { data, error } = await supabaseClient.from('orders').select('*').eq('email', myEmail).order('order_date',{ascending:false});
+            if (!error && data) {
+                orders = data.map(o => ({id:o.order_id||o.id,items:o.items||[],total:Number(o.total||0),totalToBeInformed:(o.items||[]).some(x=>x.isCustom),status:o.status,date:o.order_date?new Date(o.order_date).toLocaleDateString():'—',deliveryDate:o.delivery_date,customer:{name:o.customer_name,phone:o.phone,email:o.email,address:o.address,pincode:o.pincode}}));
+            }
+            if (!orders.length) { container.innerHTML='<p style="color:#888;text-align:center;">No orders found for this email address.</p>'; return; }
+            container.innerHTML = orders.map(order => {
+                const itemsList=(order.items||[]).map(i=>i.title).join(', ');
+                const delivered=order.status==='Order Delivered';
+                return `<div style="border:1px solid var(--accent);padding:15px;border-radius:8px;margin-bottom:15px;background:#fafafa;">
+                  <div style="display:flex;justify-content:space-between;font-weight:bold;margin-bottom:5px;"><span>Order ID: ${order.id}</span><span style="color:${delivered?'#2e7d32':'#6d4c41'}">${delivered?'Order has been delivered':(order.status||'Order Placed')}</span></div>
+                  <div style="font-size:14px;color:#555;margin-bottom:5px;">Items: ${itemsList}</div>
+                  <div style="font-size:14px;font-weight:600;">Total Amount: ${order.totalToBeInformed?'Rate will be informed later through WhatsApp':'₹'+Number(order.total||0).toFixed(2)}</div>
+                  <div style="font-size:12px;color:#888;margin-top:5px;">Placed on: ${order.date}</div>
+                  <div style="font-size:13px;font-weight:600;margin-top:8px;">Delivery date: ${order.deliveryDate||'Will be shown later'}</div>
+                </div>`;
+            }).join('');
+        }
+
+        window.addEventListener('storage', function(event) {
+            if (event.key === 'zimbabeOrders' || event.key === 'zimbabeDeliveredOrders') {
+                orders = JSON.parse(localStorage.getItem('zimbabeOrders') || '[]');
+                renderTracking();
+            }
+            if (event.key === 'zimbabeProducts') {
+                products = JSON.parse(localStorage.getItem('zimbabeProducts') || '[]');
+                renderProducts();
+            }
+        });
+    </script>
+</body>
+</html>
